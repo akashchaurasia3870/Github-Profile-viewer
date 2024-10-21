@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>GitHub Profile Viewer</title>
+</head>
+<body>
+    
+    
+<div class="w-[100vw] h-[100vh] flex justify-center items-center flex-col">
+    <p class="py-6 text-center text-3xl font-semibold leading-7 text-gray-600">Github Profile Viewer</p>
+  
+    <div class="relative m-2 bg-white px-6 pb-8 pt-10 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+      <div id="profile" class="mx-h-[300px] m-2 flex flex-row items-center justify-start rounded-lg border-2 p-3">
+        <div class="m-2 flex h-full flex-col items-center justify-center">
+          <img src="" style="width:130px;height:100px;border-radius:10px" id="git_image" />
+          <span id="git_name" class="text-sm font-semibold"></span>
+        </div>
+        <div class="flex h-full w-full flex-col items-start">
+          <span id="git_bio" class="-mt-6 text-xl font-semibold"></span>
+          <div class="flex flex-wrap gap-2 pt-2">
+            <span  class="w-[48%] cursor-pointer rounded-sm bg-red-500 px-2 py-1 text-sm font-semibold text-white hover:bg-red-600">Repository : <span id="repos_count"></span></span>
+            <span class="w-[48%] rounded-sm bg-green-500 px-2 py-1 text-sm font-semibold text-white hover:bg-green-600" >Followers : <span id="followers_count"></span></span>
+            <span class="w-[48%] rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white hover:bg-sky-600" >Following : <span id="following_count"></span></span>
+            <span class="mt-0.5 w-[48%]"><a class="w-[100%] rounded-sm bg-gray-500 px-7 py-1 text-[15px] text-white hover:bg-gray-600" href="" target="_blank" id="profile_url">View Profile</a></span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="m-2 flex justify-between rounded-lg ">
+        <input type="text" id="username" name="username" value="akashchaurasia3870" placeholder="Enter User Name" class="my-2 w-[69%] rounded-lg border-2 p-2 font-extrabold text-black" />
+        <button onclick="fetchProfile()" class="my-2 w-[29%] rounded-lg border-2 bg-black p-2 text-white">Get Profile</button>
+      </div>
+    </div>
+  </div>
+
+    <script>
+
+
+        function fetchProfile(){
+            const username = document.getElementById('username').value
+                if(!username){
+                    alert('Enter Github User Name')
+                    return;
+                }
+
+                fetch(`https://api.github.com/users/${username}`).then((res)=>{
+                    if(!res.ok){
+                        throw new Error("Network response is not ok")
+                    }else{
+                        return res.json();
+                    }
+                }).then((data)=>{
+                    displayProfile(data);
+                }).catch((err)=>{
+                    console.log("Something went wrong ",err);
+                    
+                });
+        }
+
+        function displayProfile(data){
+
+            console.log(data);
+            
+           const git_image = document.getElementById("git_image");
+           const git_name = document.getElementById("git_name");
+           const git_bio = document.getElementById("git_bio");
+           const git_repos_count = document.getElementById("repos_count");
+           const git_followers_count = document.getElementById("followers_count");
+           const git_following_count = document.getElementById("following_count");
+           const git_profile_url = document.getElementById("profile_url");
+
+           git_image.src = data.avatar_url;
+           git_name.innerText = data.name;
+           git_bio.innerText = data.bio;
+           git_repos_count.innerText = data.public_repos;
+           git_followers_count.innerText = data.followers;
+           git_following_count.innerText = data.following;
+           git_profile_url.href = data.html_url;
+
+
+           
+
+        }
+
+        (function(){
+           fetchProfile()
+        })()
+    </script>
+</body>
+</html>
